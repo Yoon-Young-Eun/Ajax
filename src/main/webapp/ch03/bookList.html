@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transtional//EN" "http://www.w3.org//TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>책 목록</title>
+<script type="text/javascript" src="httpRequest.js"></script>
+<script type="text/javascript">
+var xmlDoc = null; //서버에서 읽어온 XML문서를 저장
+var xslDoc = null; //서버에서 읽어온 XSL 문서를 저장
+function loadBooks(){
+	sendRequest("books.jsp", null, loadedBooksXML, "get"); //XML 로딩
+}
+function loadedBooksXML(){
+	if(httpRequest.readyState==4){
+		if(httpRequest.status ==200){
+			xmlDoc = httpRequest.responseXML;
+			sendRequest("books.xsl", null, loadedBooksXSL, "get");
+		}//XML 읽은 뒤 XSL 문서 로딩
+	}
+}//먼저 위에서 xml문서를 읽어오고 xml문서를 다읽어 오면 xsl문서를 읽어온다
+function loadedBooksXSL(){
+	if(httpRequest.readyState ==4){
+		if(httpRequest.status ==200){
+			xslDoc = httpRequest.responseXML;  //xsl도 결국 xml 문서이기때문에 동일하게 responseXML을 사용해서 읽어온다.
+			doXSLT();//XSL을 읽은 뒤 변환 실행
+		}
+	}
+}
+function doXSLT(){
+	if(xmlDoc == null || xslDoc == null)
+		return;
+	var bookList = document.getElementById("bookList");
+	if(window.ActiveXObject){ //IE인 경우 변환처리
+		bookList.innerHTML = xmlDoc.transformNode(xslDoc); // XML,XSL 모두 읽어오면 XSL을 사용해서 XML 코드로 변환한다.
+		}else{ //기타 브라우저의 경우 변화처리 코드
+		var xsltProc = new XSLTProcessor();   //파이어폭스 변환방법
+		xsltProc.importStylesheet(xslDoc);
+		var fragment = xsltProc.transformToFragment(xmlDoc, document); //모질라 변환 방법
+		bookList.appendChild(fragment);
+	}
+}
+window.onload = function(){
+	loadBooks();
+}
+</script>
+</head>
+<body>
+     <h1>신규 책 목록</h1>
+     <div id="bookList"></div>
+</body>
+</html>

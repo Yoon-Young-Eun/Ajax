@@ -9,8 +9,7 @@
 		   "자바 서버 페이지",
 		   "자바스터디",
 		   "자바서비스",
-		   "자바깡통"
-   };
+		   "자바깡통"};
 
   public List search(String keyword){  //keyword를 사용해서 제시어 목록을 추출해주는 메서드(함수)
 	  if(keyword == null || keyword.equals(""))
@@ -18,7 +17,7 @@
 	  keyword = keyword.toUpperCase();
 	  List result = new java.util.ArrayList(8);
 	  for(int i = 0; i<keywords.length; i++){
-		  if(((String)keywords[i]).startsWith(keyword)){
+		  if(((String)keywords[i]).startsWith(keyword)){ //startsWith 탐색할 문자열이 있으면 True반환
 			  result.add(keywords[i]);
 		  }
 	  }

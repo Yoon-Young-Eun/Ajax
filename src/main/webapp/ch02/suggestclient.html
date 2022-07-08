@@ -5,18 +5,21 @@
 <title>서제스트</title>
 <script type="text/javascript" src ="httpRequest.js"></script>
 <script type="text/javascript">
-var checkFirst = false;
-var lastKeyword ='';
-var loopSendKeyword = false;
+var checkFirst = false; //
+var lastKeyword =''; // 가장최근 입력한 값
+var loopSendKeyword = false;  // startSugg
+
 function startSuggest(){
 	if(checkFirst == false){
-		setTimeout("sendKeyword();", 500);
+		setTimeout("sendKeyword();", 500); // 여러번 클릭시, 중복(호출) 방지를 위한 타임아웃 설정 (일정시간이 지난 후에 함수 실행)
 		loopSendKeyword = true;
 	}                  //0.5초 후에 sendKeyword()함수를 실행
 	checkFirst = true;
 }
+
 function sendKeyword(){
 	if(loopSendKeyword == false) return;
+	console.log("무한?");
 	var keyword = document.search.keyword.value;
 	if(keyword == ''){
 		lastKeyword='';
@@ -24,7 +27,7 @@ function sendKeyword(){
 	}else if(keyword != lastKeyword){
 		lastKeyword = keyword;
 		if(keyword != ''){
-			var params = "keyword=" + encodeURIComponent(keyword);
+			var params = "keyword=" + encodeURIComponent(keyword); //문자열을 UTF-8로 인코딩 해주는 함수
 			sendRequest("suggest.jsp", params, displayResult, 'post');
 		}else{
 			hide('suggest');
@@ -32,21 +35,29 @@ function sendKeyword(){
 	}
 	setTimeout("sendKeyword();", 500);
 }
+
 function displayResult(){
 	if(httpRequest.readyState == 4){
-		if(httpRequest.status == 200){
-			var resultText = httpRequest.responseText;
-			var result = resultText.split('|');
-			var count = parseInt(result[0]);
+		if(httpRequest.status == 200){ //서버 응답 정상처리인 경우
+			var resultText = httpRequest.responseText;  //response로 넘어온 텍스트 할당
+			// alert(resultText); // 검색에 "자바"라고 치면
+			// 6|자바,자바프로그래밍,, 등 6개 단어가 alert로 표기는걸 확인할 수 있음
+			// 검색창에 "자바"라고 치면
+			var result = resultText.split('|'); // |기준으로 좌우를 배열로 구분 
+			   // 0={6} , 1={자바, 자바프로그래밍,,,,}
+			var count = parseInt(result[0]); // 6
 			var keywordList = null;
 			if(count > 0) {
 				keywordList = result[1].split(',');
+				// alert(keywordList); "자바"라고 치면 자바, 프로그래밍, , , 로 표기됨
 				var html='';
 				for(var i = 0;i< keywordList.length; i++) {
 					html += "<a href=\"javascript:select('"+keywordList[i]+"')\">"+ keywordList[i] + "</a><br/>";
+					//<a href="javascript:select('자바');">자바</a><br/>
 				}
-				var listView = document.getElementById('suggestList');
-				listView.innerHTML = html;
+				var listView = document.getElementById('suggestList');  //특정 객체를 찾아내고 싶을때 , id속성값을 가지고 찾음 id값이 suggestList인 태그를 찾아 ListView에 저장
+				//document.getElementById("id이름").innerHTML = 변경하고 싶은 내용
+				listView.innerHTML = html;  // listView라는 태크 객체 안에 내용을 innerHtml을 이용해서 html에 저장된 내용을 바꾼다.
 				show('suggest');
 			}else{
 				hide('suggest');
@@ -56,12 +67,14 @@ function displayResult(){
 		}
 	}
 }
+
 function select(selectedKeyword){
 	document.search.keyword.value=selectedKeyword;
 	loopSendKeyword = false;
 	checkFirst = false;
 	hide('suggest');
 }
+
 function show(elementId){
 	var element = document.getElementById(elementId);
 	if(element){
@@ -75,16 +88,16 @@ function hide(elementId){
 	}
 }
 </script>
+
 <style>
- #view {
- border: 1px solid #999;
- }
+
+ #view {border: 1px solid #999;}
  
 </style>
 </head>
 <body>
    <form name="search">
-       <input type="text" name="keyword" id="keyword" onkeydown ="startSuggest()"/>
+       <input type="text" name="keyword" id="keyword" onkeydown ="startSuggest()"/> <!-- 사용자가 키보드를 눌렀을때 실행 -->
        <input type="button" value="검색" />
        <div id="suggest" style="display:''; position:absolute; left:0px; top:30px;"> <!-- 서버가 전송한 제시어 목록이 출력될 영역 -->
        <div id="suggestList"></div>              

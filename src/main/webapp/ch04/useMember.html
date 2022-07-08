@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org//TR/xhtml4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<title>Member 클래스 사용</title>
+<script type="text/javascript" src="log.js"></script>
+<script type="text/javascript" src="member_json.js"></script>
+<script type="text/javascript">
+window.onload = function(){ 
+      var mem = new Member("javaline", "이승재", "7000001000000");
+      log('변경전');
+      log('회원 : ' + mem.toString());
+      log('나이 : ' + mem.getAge());
+      mem.setValue("arizona", "Tommy.Lee", "8000001000000");
+      log('변경후');
+      log('회원 : ' + mem.toString());
+      log('나의 : ' + mem.getAge());
+}
+</script>
+</head>
+<body>
+      <div id="debugConsole"></div>
+</body>
+</html>
