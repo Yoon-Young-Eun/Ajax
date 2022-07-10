@@ -19,6 +19,8 @@ public class DB {
     }
     private DB() {}
     	public static Connection getConnection()throws SQLException {
+    		
+    		System.out.println(dataSource.getConnection());
     		return dataSource.getConnection();
     	}
     }

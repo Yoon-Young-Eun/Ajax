@@ -1,0 +1,7 @@
+@charset "UTF-8";
+div#displayArea{
+	width :700px;
+	height :403px;
+	border-color : #6699FF;
+	border-style :double
+}

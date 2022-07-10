@@ -35,13 +35,13 @@ ajax.xhr.Request.prototype={
 	},
 	send: function(){
 		this.req=this.getXMLHttpRequest();
-		var httpMethod = this.method ? this.method : 'get';
-		if(httpMethod != 'get' && httpMethod != 'post'){
-			httpMethod = 'get';
+		var httpMethod = this.method ? this.method : 'GET';
+		if(httpMethod != 'GET' && httpMethod != 'POST'){
+			httpMethod = 'GET';
 		}
 		var httpParams = (this.params == null || this.params =='')? null : this.params;
 		var httpUrl = this.url;
-		if(httpMethod =='get' && httpParams != null){
+		if(httpMethod =='GET' && httpParams != null){
 			httpUrl = httpUrl +"?"+httpParams;
 		}
 		this.req.open(httpMethod, httpUrl, true);
@@ -50,7 +50,7 @@ ajax.xhr.Request.prototype={
 		this.req.onreadystatechange = function(){
 			request.onStateChange.call(request);
 		}
-		this.req.send(httpMethod =='post' ? httpParams : null);
+		this.req.send(httpMethod =='POST' ? httpParams : null);
 	},
 	onStateChange:function(){
 		this.callback(this.req);
